@@ -31,18 +31,6 @@ has cmd_hdfs => (
     lazy    => 1,
 );
 
-has cmd_mapred => (
-    is => 'rw',
-    isa => sub {
-        my $val = shift;
-        Carp::confess sprintf "The command `%s` either does not exist or not an executable!",
-                        $val,
-        ;
-    },
-    default => sub { '/usr/bin/mapred' },
-    lazy    => 1,
-);
-
 sub dfs {
     my $self = shift;
     my $options = Ref::Util::is_hashref $_[0] ? shift( @_ ) : {};
