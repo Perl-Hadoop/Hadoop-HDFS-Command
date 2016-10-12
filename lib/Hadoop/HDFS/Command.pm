@@ -438,6 +438,13 @@ call from Perl and parse their output.
 The interface is partially done at the moment (see the implemented wrappers
 down below).
 
+You can always use the WebHDFS to do similar operations instead of failling
+back to the commandline. However there are several benefits of using the
+cli; i) you'll end up with a single C<JVM> invocation, so the response
+might be faster ii) Some functionality / endpoints might be buggy for WebHDFS
+but might work with the cli (for example escaping certain values is broken
+in some versions, but works with the cli).
+
 =head1 SYNOPSIS
 
     use Hadoop::HDFS::Command;
