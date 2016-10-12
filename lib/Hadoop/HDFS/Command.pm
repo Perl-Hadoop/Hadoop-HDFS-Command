@@ -560,14 +560,4 @@ The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
 
 C<`hdfs dfs -help`>.
 
-=head1 AUTHORS
-
-=over 4
-
-=item *
-
-Burak Gursoy C<< burakE<64>cpan.org >>.
-
-=back
-
 =cut
