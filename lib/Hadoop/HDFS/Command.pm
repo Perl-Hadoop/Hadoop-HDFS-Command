@@ -415,8 +415,8 @@ sub _split_on_newlines {
 }
 
 sub _log {
-    my($level, $msg, @param) = @_;
-    my $msg = sprintf "[%s] %s\n", uc $level, $msg;
+    my($level, $tmpl, @param) = @_;
+    my $msg = sprintf "[%s] %s\n", uc $level, $tmpl;
     printf STDERR $msg, @param;
 }
 
