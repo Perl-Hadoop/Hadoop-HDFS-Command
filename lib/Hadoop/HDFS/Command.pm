@@ -428,9 +428,15 @@ __END__
 
 =head1 NAME
 
-Hadoop::HDFS::Command - Wrappers for the hdfs command
+Hadoop::HDFS::Command - Wrappers for various hadoop hdfs cli commands
 
 =head1 DESCRIPTION
+
+This is a simple wrapper around the hdfs commandline to make them easier to
+call from Perl and parse their output.
+
+The interface is partially done at the moment (see the implemented wrappers
+down below).
 
 =head1 SYNOPSIS
 
@@ -440,23 +446,119 @@ Hadoop::HDFS::Command - Wrappers for the hdfs command
 
 =head1 METHODS
 
+=head2 new
+
+The constructor. Available attributes are listed below.
+
+=head3 cmd_hdfs
+
+Default value is C</usr/bin/hdfs>. This option needs to be altered if you have
+the C<`hdfs`> command in some other place.
+
 =head2 dfs
 
+One of the top level commands, including an interface to the sub-commands
+listed below. The calling convention of the sub commands is as simple as:
+
+    my @rv = $hdfs->dfs( \%options, $sub_command => @subcommand_args );
+    # options hash is optional
     my @rv = $hdfs->dfs( $sub_command => @subcommand_args );
 
-One of the top level commands, including an interface to the sub-commands below.
+Available options are listed below:
+
+=over 4
+
+=item ignore_fail :Bool
+
+Global.
+
+=item silent :Bool
+
+Global.
+
+=item want_epoch :Bool
+
+Only used for C<ls>. Converts timestamps to epoch.
+
+=item callback :CODE
+
+Only used for C<ls>. The callback always needs to return true to continue
+processing, returning false from it will short-circuit the processor.
+
+=back
 
 =head3 du
 
+The C<@subcommand_args> can have these defined: C<-s>, C<-h>.
+
+    my @rv = $hdfs->dfs( du => @subcommand_args => $hdfs_path );
+    my @rv = $hdfs->dfs( du => qw( -h -s ) => "/tmp" );
+    my @rv = $hdfs->dfs(
+                {   
+                    ignore_fail => 1,
+                    silent      => 1,
+                },  
+                du => -s => @hdfs_paths,
+            );
+
 =head3 ls
+
+The C<@subcommand_args> can have these defined: C<-d>, C<-h>, C<R>.
+
+    my @rv = $hdfs->dfs( ls => @subcommand_args => $hdfs_path );
+
+The callback can be used to prevent buffering and process the result set yourself.
+The callback always needs to return true to continue processing. If you want to
+skip some entries but continue processing then a true value needs to be returned.
+A bare return (which is false) will short circuit the iterator and discard any
+remaining records.
+
+    my %options = (
+        callback => sub {
+            # This callback will receive a hash meta-data about the file.
+            my $file = shift;
+            if ( $file->{type} eq 'dir' ) {
+                # do something
+            }
+            
+            # skip this one, but continue processing
+            return 1 if $file->{type} ne 'file';
+            
+            # do something
+            
+            return if $something_really_bad_so_end_this_processor;
+            
+            # continue processing
+            return 1;
+        },
+        # The meta-data passed to the callback will have an "epoch"
+        # key set when this is true.
+        want_epoch => 1,
+    );
+    # execute the command recursively on the path
+    $hdfs->dfs( \%options, ls => -R => $hdfs_path );
 
 =head3 mv
 
+    my @rv = $hdfs->dfs( mv => $hdfs_source_path, $hdfs_dest_path );
+
 =head3 put
+
+The C<@subcommand_args> can have these defined: C<-f>, C<-p>, C<-l>
+
+    $hdfs->dfs( put => @subcommand_args, $local_path, $hdfs_path );
+    # notice the additional "-"
+    $hdfs->dfs( put => '-f', '-', $hdfs_path, $in_memory_data );
 
 =head3 rm
 
+The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
+
+    $hdfs->dfs( rm => @subcommand_args, $hdfs_path );
+
 =head1 SEE ALSO
+
+C<`hdfs dfs -help`>.
 
 =head1 AUTHORS
 
