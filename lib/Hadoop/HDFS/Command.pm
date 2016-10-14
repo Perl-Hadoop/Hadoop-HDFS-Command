@@ -9,12 +9,13 @@ our $VERSION = '0.001';
 use Capture::Tiny   ();
 use Carp            ();
 use Data::Dumper;
-use DateTime;
 use DateTime::Format::Strptime;
+use DateTime;
 use Getopt::Long    ();
 use IPC::Cmd        ();
 use Ref::Util       ();
 use Time::HiRes   qw( time );
+use Types::Standard qw(Bool);
 
 { use Moo; }
 
@@ -28,6 +29,13 @@ has cmd_hdfs => (
         ;
     },
     default => sub { '/usr/bin/hdfs' },
+    lazy    => 1,
+);
+
+has enable_log => (
+    is      => 'rw',
+    isa     => Bool,
+    default => sub { 0 },
     lazy    => 1,
 );
 
@@ -415,6 +423,8 @@ sub _split_on_newlines {
 }
 
 sub _log {
+    my $self = shift;
+    return if ! $self->enable_log;
     my($level, $tmpl, @param) = @_;
     my $msg = sprintf "[%s] %s\n", uc $level, $tmpl;
     printf STDERR $msg, @param;
