@@ -472,6 +472,10 @@ The constructor. Available attributes are listed below.
 Default value is C</usr/bin/hdfs>. This option needs to be altered if you have
 the C<`hdfs`> command in some other place.
 
+=head3 enable_log :Bool
+
+Can be used to enable the internal logging feature. Disabled by default.
+
 =head2 dfs
 
 One of the top level commands, including an interface to the sub-commands
