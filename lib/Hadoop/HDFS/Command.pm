@@ -4,8 +4,6 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.001';
-
 use Capture::Tiny   ();
 use Carp            ();
 use Data::Dumper;
