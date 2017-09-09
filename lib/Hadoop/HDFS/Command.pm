@@ -15,7 +15,7 @@ use Getopt::Long    ();
 use IPC::Cmd        ();
 use Ref::Util       ();
 use Time::HiRes   qw( time );
-use Types::Standard qw(Bool);
+use Types::Standard qw(Bool Str);
 
 { use Moo; }
 
@@ -38,6 +38,20 @@ has enable_log => (
     default => sub { 0 },
     lazy    => 1,
 );
+
+has 'runas' => (
+    is      => 'rw',
+    isa     => Str,
+    default => getpwuid $<,
+    lazy    => 1,
+);
+
+before ['_capture', '_capture_with_stdin'] => sub {
+    my ($self, $options, @cmd) = @_;
+    unshift @cmd, 'sudo', '-u', $self->runas
+        unless $self->runas eq getpwuid $<;
+    @_ = ($self, $options, @cmd);
+};
 
 sub dfs {
     my $self = shift;
@@ -515,10 +529,10 @@ The C<@subcommand_args> can have these defined: C<-s>, C<-h>.
     my @rv = $hdfs->dfs( du => @subcommand_args => $hdfs_path );
     my @rv = $hdfs->dfs( du => qw( -h -s ) => "/tmp" );
     my @rv = $hdfs->dfs(
-                {   
+                {
                     ignore_fail => 1,
                     silent      => 1,
-                },  
+                },
                 du => -s => @hdfs_paths,
             );
 
@@ -541,14 +555,14 @@ remaining records.
             if ( $file->{type} eq 'dir' ) {
                 # do something
             }
-            
+
             # skip this one, but continue processing
             return 1 if $file->{type} ne 'file';
-            
+
             # do something
-            
+
             return if $something_really_bad_so_end_this_processor;
-            
+
             # continue processing
             return 1;
         },
