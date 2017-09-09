@@ -352,6 +352,31 @@ sub _dfs_mkdir {
     return @response
 }
 
+sub _dfs_chmod {
+    my $self    = shift;
+    my $options = shift;
+    my @params  = @_;
+    my @flags   = qw( p );
+    my($arg, $paths) = $self->_parse_options(
+                            \@params,
+                            \@flags,
+                            undef,
+                            {
+                                require_params => 1,
+                            },
+                        );
+    my @response = $self->_capture(
+        $options,
+        $self->cmd_hdfs,
+        qw( dfs -chmod ),
+        ( map { '-' . $_ } grep { $arg->{ $_ } } @flags ),
+        @{ $paths },
+    );
+
+    # just a confirmation message
+    return @response
+}
+
 sub _parse_options {
     my $self = shift;
     # TODO: collect dfs generic options
@@ -652,6 +677,12 @@ The C<@subcommand_args> can have these defined: C<-d>, C<-e>, C<-f>, C<-s>, C<-z
 The C<@subcommand_args> can have these defined: C<-p>
 
     $hdfs->dfs( mkdir => @subcommand_args, $path );
+
+=head3 chmod
+
+The C<@subcommand_args> can have these defined: C<-R>
+
+    $hdfs->dfs( chmod => @subcommand_args, $mode, $path );
 
 =head1 SEE ALSO
 
