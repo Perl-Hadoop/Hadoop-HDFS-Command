@@ -302,6 +302,31 @@ sub _dfs_put {
     return @response;
 }
 
+sub _dfs_test {
+    my $self    = shift;
+    my $options = shift;
+    my @params  = @_;
+    my @flags   = qw( d e f s z );
+    my($arg, $paths) = $self->_parse_options(
+                            \@params,
+                            \@flags,
+                            undef,
+                            {
+                                require_params => 1,
+                            },
+                        );
+    eval {
+        $self->_capture(
+            $options,
+            $self->cmd_hdfs,
+            qw( dfs -test ),
+            ( map { '-' . $_ } grep { $arg->{ $_ } } @flags ),
+            @{ $paths },
+        );
+        return 1;
+    } or return 0;
+}
+
 sub _parse_options {
     my $self = shift;
     # TODO: collect dfs generic options
@@ -590,6 +615,12 @@ The C<@subcommand_args> can have these defined: C<-f>, C<-p>, C<-l>
 The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
 
     $hdfs->dfs( rm => @subcommand_args, $hdfs_path );
+
+=head3 test
+
+The C<@subcommand_args> can have these defined: C<-d>, C<-e>, C<-f>, C<-s>, C<-z>
+
+    $hdfs->dfs( test => @subcommand_args, $hdfs_path );
 
 =head1 SEE ALSO
 
