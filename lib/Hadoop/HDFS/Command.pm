@@ -377,6 +377,31 @@ sub _dfs_chmod {
     return @response
 }
 
+sub _dfs_chown {
+    my $self    = shift;
+    my $options = shift;
+    my @params  = @_;
+    my @flags   = qw( p );
+    my($arg, $paths) = $self->_parse_options(
+                            \@params,
+                            \@flags,
+                            undef,
+                            {
+                                require_params => 1,
+                            },
+                        );
+    my @response = $self->_capture(
+        $options,
+        $self->cmd_hdfs,
+        qw( dfs -chown ),
+        ( map { '-' . $_ } grep { $arg->{ $_ } } @flags ),
+        @{ $paths },
+    );
+
+    # just a confirmation message
+    return @response
+}
+
 sub _parse_options {
     my $self = shift;
     # TODO: collect dfs generic options
@@ -683,6 +708,12 @@ The C<@subcommand_args> can have these defined: C<-p>
 The C<@subcommand_args> can have these defined: C<-R>
 
     $hdfs->dfs( chmod => @subcommand_args, $mode, $path );
+
+=head3 chown
+
+The C<@subcommand_args> can have these defined: C<-R>
+
+    $hdfs->dfs( chown => @subcommand_args, $OWNERCOLONGROUP, $path );
 
 =head1 SEE ALSO
 
