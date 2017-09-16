@@ -3,7 +3,6 @@ package Hadoop::HDFS::Command;
 use 5.010;
 use strict;
 use warnings;
-
 use Capture::Tiny   ();
 use Carp            ();
 use Data::Dumper;
@@ -37,10 +36,10 @@ has enable_log => (
     lazy    => 1,
 );
 
-has 'runas' => (
+has runas => (
     is      => 'rw',
     isa     => Str,
-    default => getpwuid $<,
+    default => scalar getpwuid $<,
     lazy    => 1,
 );
 
