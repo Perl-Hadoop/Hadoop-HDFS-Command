@@ -814,7 +814,7 @@ The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
 The C<@subcommand_args> can have these defined: C<-b>, C<-k>, C<-m acl_spec>,
 C<-x acl_spec>, C<--set acl_spec>
 
-    $hdfs->dfs( set_facl => @subcommand_args, $hdfs_path );
+    $hdfs->dfs( setfacl => @subcommand_args, $hdfs_path );
 
 =head3 test
 
