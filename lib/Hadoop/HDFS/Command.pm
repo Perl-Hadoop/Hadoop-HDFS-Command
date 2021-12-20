@@ -749,6 +749,10 @@ The C<@subcommand_args> can have these defined: C<-s>, C<-h>.
                 du => -s => @hdfs_paths,
             );
 
+=head3 getfacl
+
+    my $rv = $hdfs->dfs( getfacl => $hdfs_path );
+
 =head3 ls
 
 The C<@subcommand_args> can have these defined: C<-d>, C<-h>, C<R>.
@@ -803,6 +807,14 @@ The C<@subcommand_args> can have these defined: C<-f>, C<-p>, C<-l>
 The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
 
     $hdfs->dfs( rm => @subcommand_args, $hdfs_path );
+
+=head3 setfacl
+
+
+The C<@subcommand_args> can have these defined: C<-b>, C<-k>, C<-m acl_spec>,
+C<-x acl_spec>, C<--set acl_spec>
+
+    $hdfs->dfs( set_facl => @subcommand_args, $hdfs_path );
 
 =head3 test
 
