@@ -435,7 +435,7 @@ sub _dfs_getfacl {
     my $self    = shift;
     my $options = shift;
     my @params  = @_;
-    my @flags   = qw();
+    my @flags   = qw( R );
     my($arg, $paths) = $self->_parse_options(
                             \@params,
                             \@flags,
@@ -470,7 +470,7 @@ sub _dfs_setfacl {
     my $self    = shift;
     my $options = shift;
     my @params  = @_;
-    my @flags   = qw( b k );
+    my @flags   = qw( b k R );
     my @args    = qw( m=s x=s set=s );
 
     my($arg, $paths) = $self->_parse_options(
