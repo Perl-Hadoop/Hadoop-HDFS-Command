@@ -788,7 +788,7 @@ remaining records.
         want_epoch => 1,
     );
     # execute the command recursively on the path
-    $hdfs->dfs( \%options, ls => -R => $hdfs_path );
+    $hdfs->dfs( \%options, ls => qw( -R ), $hdfs_path );
 
 =head3 mv
 
