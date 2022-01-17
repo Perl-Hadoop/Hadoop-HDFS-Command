@@ -811,7 +811,7 @@ The C<@subcommand_args> can have these defined: C<-f>, C<-r>, C<-skipTrash>
 =head3 setfacl
 
 
-The C<@subcommand_args> can have these defined: C<-b>, C<-k>, C<-m acl_spec>,
+The C<@subcommand_args> can have these defined: C<-b>, C<-k>, C<-R>, C<-m acl_spec>,
 C<-x acl_spec>, C<--set acl_spec>
 
     $hdfs->dfs( setfacl => @subcommand_args, $hdfs_path );
