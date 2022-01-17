@@ -755,7 +755,7 @@ The C<@subcommand_args> can have these defined: C<-s>, C<-h>.
 
 =head3 ls
 
-The C<@subcommand_args> can have these defined: C<-d>, C<-h>, C<R>.
+The C<@subcommand_args> can have these defined: C<-d>, C<-h>, C<-R>.
 
     my @rv = $hdfs->dfs( ls => @subcommand_args => $hdfs_path );
 
